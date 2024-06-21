@@ -15,8 +15,8 @@ namespace Company.PL.Controllers
 
         public IActionResult Index()
         {
-            //var department = _repository.GetAll();
-            return View(/*department*/);
+            var department = _repository.GetAll();
+            return View(department);
         }
 
         //public IActionResult Create()
