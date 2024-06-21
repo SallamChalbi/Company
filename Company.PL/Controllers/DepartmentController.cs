@@ -19,21 +19,21 @@ namespace Company.PL.Controllers
             return View(department);
         }
 
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public IActionResult Create(Department department)
-        //{
-        //    if(ModelState.IsValid)
-        //    {
-        //        var count = _repository.Add(department);
-        //        if (count > 0)
-        //            return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(department);
-        //}
+        [HttpPost]
+        public IActionResult Create(Department department)
+        {
+            if (ModelState.IsValid)
+            {
+                var count = _repository.Add(department);
+                if (count > 0)
+                    return RedirectToAction(nameof(Index));
+            }
+            return View(department);
+        }
     }
 }
