@@ -1,0 +1,24 @@
+﻿@model Department
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure to Delete <span class="text-danger">@Model.Name</span> Department?</h1>
+
+<form asp-action="Delete">
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Code"></label>
+        <input asp-for="Code" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="DateOfCreation"></label>
+        <input asp-for="DateOfCreation" class="form-control" readonly />
+    </div>
+
+    <input type="submit" value="Delete" data-bs-dismiss="modal" class="btn btn-danger" /> |
+    <a asp-action="Index" class="btn btn-light">Cancel</a>
+</form>

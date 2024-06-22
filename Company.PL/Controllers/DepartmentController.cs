@@ -60,6 +60,7 @@ namespace Company.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute]int id, Department department)
         {
             if(id != department.Id)
@@ -70,6 +71,33 @@ namespace Company.PL.Controllers
             try
             {
                 _repository.Update(department);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // 1. Log Exception 
+                // 2. Friendly Message 
+
+                if (_env.IsDevelopment())
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                else
+                    ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Department");
+
+                return View(department);
+            }
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            return Details(id, "Delete");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Department department)
+        {
+            try
+            {
+                _repository.Delete(department);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
