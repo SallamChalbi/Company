@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Company.DAL.Models
 {
-    public class Department
+    public class Department : ModelBase
     {
-        public int Id { get; set; }
         [Required]
         public string Code { get; set; }
         [Required]
