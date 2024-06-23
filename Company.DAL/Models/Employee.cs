@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -56,5 +57,8 @@ namespace Company.DAL.Models
         public EmpType EmployeeType { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public bool IsDeleted { get; set; } = false;
+        [ForeignKey("Department")]
+        public int? DepartmentId { get; set; }
+        public Department Department { get; set; }
     }
 }
