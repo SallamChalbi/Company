@@ -3,6 +3,7 @@ using Company.DAL.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using System;
 
 namespace Company.PL.Controllers
@@ -18,9 +19,10 @@ namespace Company.PL.Controllers
             _env = env;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string Message)
         {
             var employee = _repository.GetAll();
+            ViewData["Message"] = Message;
             return View(employee);
         }
 
@@ -36,7 +38,10 @@ namespace Company.PL.Controllers
             {
                 var count = _repository.Add(employee);
                 if (count > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "New Employee is Created";
+                    return RedirectToAction(nameof(Index), new { Message = "alert-success" });
+                }
             }
             return View(employee);
         }
@@ -69,8 +74,12 @@ namespace Company.PL.Controllers
 
             try
             {
-                _repository.Update(employee);
-                return RedirectToAction(nameof(Index));
+                var count = _repository.Update(employee);
+                if (count > 0)
+                {
+                    TempData["Message"] = "One Employee is Updated";
+                    return RedirectToAction(nameof(Index), new { Message = "alert-info" });
+                }
             }
             catch (Exception ex)
             {
@@ -82,8 +91,8 @@ namespace Company.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Employee");
 
-                return View(employee);
             }
+            return View(employee);
         }
 
         public IActionResult Delete(int? id)
@@ -96,8 +105,12 @@ namespace Company.PL.Controllers
         {
             try
             {
-                _repository.Delete(employee);
-                return RedirectToAction(nameof(Index));
+                var count = _repository.Delete(employee);
+                if (count > 0)
+                {
+                    TempData["Message"] = "One Department is Deleted";
+                    return RedirectToAction(nameof(Index), new { Message = "alert-danger" });
+                }
             }
             catch (Exception ex)
             {
@@ -109,8 +122,8 @@ namespace Company.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Employee");
 
-                return View(employee);
             }
+            return View(employee);
         }
     }
 }

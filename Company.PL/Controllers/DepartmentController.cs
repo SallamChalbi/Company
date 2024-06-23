@@ -19,9 +19,11 @@ namespace Company.PL.Controllers
             _env = env;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string Message)
         {
             var department = _repository.GetAll();
+            ViewData["Message"] = Message;
+            //ViewBag.Message = "Hi from ViewBag";
             return View(department);
         }
 
@@ -37,7 +39,10 @@ namespace Company.PL.Controllers
             {
                 var count = _repository.Add(department);
                 if (count > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "New Department is Created";
+                    return RedirectToAction(nameof(Index),new { Message = "alert-success" });
+                }
             }
             return View(department);
         }
@@ -70,8 +75,12 @@ namespace Company.PL.Controllers
 
             try
             {
-                _repository.Update(department);
-                return RedirectToAction(nameof(Index));
+                var count = _repository.Update(department);
+                if (count > 0)
+                {
+                    TempData["Message"] = "One Department is Updated";
+                    return RedirectToAction(nameof(Index), new { Message = "alert-info" });
+                }
             }
             catch (Exception ex)
             {
@@ -83,8 +92,8 @@ namespace Company.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Department");
 
-                return View(department);
             }
+            return View(department);
         }
 
         public IActionResult Delete(int? id)
@@ -97,8 +106,12 @@ namespace Company.PL.Controllers
         {
             try
             {
-                _repository.Delete(department);
-                return RedirectToAction(nameof(Index));
+                var count = _repository.Delete(department);
+                if (count > 0)
+                {
+                    TempData["Message"] = "One Department is Deleted";
+                    return RedirectToAction(nameof(Index), new { Message = "alert-danger" });
+                }
             }
             catch (Exception ex)
             {
@@ -110,8 +123,8 @@ namespace Company.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Department");
 
-                return View(department);
             }
+            return View(department);
         }
     }
 }

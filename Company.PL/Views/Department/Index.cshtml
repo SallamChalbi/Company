@@ -2,6 +2,8 @@
 @model IEnumerable<Department>
 @{
     ViewData["Title"] = "Departments";
+    string VDataMessage = ViewBag.Message;
+    // string VBagMessage = ViewBag.Message;
 }
 
 <h1 class="mb-5">All Department</h1>
@@ -12,6 +14,13 @@
     Create New Department
 </button>
  *@
+
+ @if(TempData["Message"] is not null)
+{
+    <div class="alert @VDataMessage">
+        @TempData["Message"]
+    </div>
+}
 @if(Model.Count() > 0)
 {
     <table class="table table-striped table-hover mt-3">
