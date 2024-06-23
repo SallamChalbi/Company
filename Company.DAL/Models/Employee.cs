@@ -41,10 +41,11 @@ namespace Company.DAL.Models
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
+        [Required]
         [EmailAddress]
         public string Email {  get; set; }
 
-        [Display(Name = "Phne Number")]
+        [Display(Name = "Phone Number")]
         [Phone]
         public string PhoneNumber { get; set; }
 
