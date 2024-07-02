@@ -10,24 +10,25 @@ namespace Company.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _repository;
-        private readonly IWebHostEnvironment _env;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public EmployeeController(IEmployeeRepository repository, IWebHostEnvironment env)
+        public EmployeeController(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository)
         {
-            _repository = repository;
-            _env = env;
+            _employeeRepository = employeeRepository;
+            _departmentRepository = departmentRepository;
         }
 
         public IActionResult Index(string Message)
         {
-            var employee = _repository.GetAll();
+            var employee = _employeeRepository.GetAll();
             ViewData["Message"] = Message;
             return View(employee);
         }
 
         public IActionResult Create()
         {
+            ViewBag.Departments = _departmentRepository.GetAll();
             return View();
         }
 
@@ -36,7 +37,7 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var count = _repository.Add(employee);
+                var count = _employeeRepository.Add(employee);
                 if (count > 0)
                 {
                     TempData["Message"] = "New Employee is Created";
@@ -51,10 +52,11 @@ namespace Company.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var employee = _repository.Get(id.Value);
+            var employee = _employeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound();
 
+            ViewBag.Departments = _departmentRepository.GetAll();
             return View(viewName, employee);
         }
 
@@ -74,7 +76,7 @@ namespace Company.PL.Controllers
 
             try
             {
-                var count = _repository.Update(employee);
+                var count = _employeeRepository.Update(employee);
                 if (count > 0)
                 {
                     TempData["Message"] = "One Employee is Updated";
@@ -86,10 +88,7 @@ namespace Company.PL.Controllers
                 // 1. Log Exception 
                 // 2. Friendly Message 
 
-                if (_env.IsDevelopment())
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                else
-                    ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Employee");
+                ModelState.AddModelError(string.Empty, ex.Message);
 
             }
             return View(employee);
@@ -105,7 +104,7 @@ namespace Company.PL.Controllers
         {
             try
             {
-                var count = _repository.Delete(employee);
+                var count = _employeeRepository.Delete(employee);
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Deleted";
@@ -117,11 +116,8 @@ namespace Company.PL.Controllers
                 // 1. Log Exception 
                 // 2. Friendly Message 
 
-                if (_env.IsDevelopment())
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                else
-                    ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Employee");
-
+                ModelState.AddModelError(string.Empty, ex.Message);
+                
             }
             return View(employee);
         }
