@@ -11,18 +11,18 @@ namespace Company.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _repository;
-        private readonly IWebHostEnvironment _env;
+        //private readonly IWebHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepository repository, IWebHostEnvironment env)
+        public DepartmentController(IDepartmentRepository repository/*, IWebHostEnvironment env*/)
         {
             _repository = repository;
-            _env = env;
+            //_env = env;
         }
 
-        public IActionResult Index(string Message)
+        public IActionResult Index(string AlertColor)
         {
             var department = _repository.GetAll();
-            ViewData["Message"] = Message;
+            ViewData["AlertColor"] = AlertColor;
             //ViewBag.Message = "Hi from ViewBag";
             return View(department);
         }
@@ -41,7 +41,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "New Department is Created";
-                    return RedirectToAction(nameof(Index),new { Message = "alert-success" });
+                    return RedirectToAction(nameof(Index),new { AlertColor = "alert-success" });
                 }
             }
             return View(department);
@@ -79,7 +79,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Updated";
-                    return RedirectToAction(nameof(Index), new { Message = "alert-info" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-info" });
                 }
             }
             catch (Exception ex)
@@ -87,10 +87,7 @@ namespace Company.PL.Controllers
                 // 1. Log Exception 
                 // 2. Friendly Message 
 
-                if (_env.IsDevelopment())
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                else
-                    ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Department");
+                ModelState.AddModelError(string.Empty, ex.Message);
 
             }
             return View(department);
@@ -110,7 +107,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Deleted";
-                    return RedirectToAction(nameof(Index), new { Message = "alert-danger" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }
             }
             catch (Exception ex)
@@ -118,10 +115,7 @@ namespace Company.PL.Controllers
                 // 1. Log Exception 
                 // 2. Friendly Message 
 
-                if (_env.IsDevelopment())
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                else
-                    ModelState.AddModelError(string.Empty, "An Error Has Occurred During Updating the Department");
+                ModelState.AddModelError(string.Empty, ex.Message);
 
             }
             return View(department);

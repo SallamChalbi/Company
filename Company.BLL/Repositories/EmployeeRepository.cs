@@ -17,8 +17,9 @@ namespace Company.BLL.Repositories
         }
 
         public IQueryable<Employee> GetEmployeesByAdress(string adress)
-        {
-            return _dbContext.Employees.Where(E => E.Adress.ToLower() == adress.ToLower());
-        }
+            => _dbContext.Employees.Where(E => E.Adress.ToLower().Contains(adress.ToLower()));
+
+        public IQueryable<Employee> SearchByName(string name)
+            => _dbContext.Employees.Where(E => E.Name.ToLower().Contains(name));
     }
 }

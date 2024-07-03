@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Company.PL.Controllers
 {
@@ -25,11 +26,18 @@ namespace Company.PL.Controllers
             //_departmentRepository = departmentRepository;
         }
 
-        public IActionResult Index(string Message)
+        public IActionResult Index(string AlertColor, string searchInput)
         {
-            ViewData["Message"] = Message;
-            var employee = _employeeRepository.GetAll();
-            var employeeVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employee);
+            var employees = Enumerable.Empty<Employee>();
+            if (string.IsNullOrEmpty(searchInput))
+            {
+                ViewData["AlertColor"] = AlertColor;
+                employees = _employeeRepository.GetAll();
+            }
+            else
+                employees = _employeeRepository.SearchByName(searchInput.ToLower());
+
+            var employeeVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
             return View(employeeVM);
         }
 
@@ -48,7 +56,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "New Employee is Created";
-                    return RedirectToAction(nameof(Index), new { Message = "alert-success" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
                 }
             }
             return View(employeeVM);
@@ -88,7 +96,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "One Employee is Updated";
-                    return RedirectToAction(nameof(Index), new { Message = "alert-info" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-info" });
                 }
             }
             catch (Exception ex)
@@ -117,7 +125,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Deleted";
-                    return RedirectToAction(nameof(Index), new { Message = "alert-danger" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }
             }
             catch (Exception ex)
