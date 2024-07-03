@@ -11,6 +11,10 @@
     </a>
 </td>
 <td>
+    @* <!-- Button trigger modal -->
+    <a asp-action="Delete" asp-route-id="@Model" class="btn btn-danger" data-toggle="modal" data-target="#staticBackdrop">
+        <i class="fas fa-trash"></i> Delete
+    </a> *@
     <a asp-action="Delete" asp-route-id="@Model" class="btn btn-danger">
         <i class="fas fa-trash"></i> Delete
     </a>

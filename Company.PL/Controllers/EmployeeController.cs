@@ -11,12 +11,12 @@ namespace Company.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository/*, IDepartmentRepository departmentRepository*/)
         {
             _employeeRepository = employeeRepository;
-            _departmentRepository = departmentRepository;
+            //_departmentRepository = departmentRepository;
         }
 
         public IActionResult Index(string Message)
@@ -28,7 +28,6 @@ namespace Company.PL.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.Departments = _departmentRepository.GetAll();
             return View();
         }
 
@@ -56,7 +55,6 @@ namespace Company.PL.Controllers
             if (employee is null)
                 return NotFound();
 
-            ViewBag.Departments = _departmentRepository.GetAll();
             return View(viewName, employee);
         }
 
