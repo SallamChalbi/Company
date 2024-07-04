@@ -1,0 +1,36 @@
+﻿@model Department
+@{
+    ViewData["Title"] = "Delete Department";
+}
+
+<!-- Modal -->
+@* <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure to Delete <span class="text-danger">@Model.Name</span> Department?</h1>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Delete">
+                    <partial name="PartialViews/DetailsDeleteDepartmentPartial" />
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Delete" class="btn btn-danger" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div> *@
+
+<h1 class="mb-5" >Are you Sure to Delete <span class="text-danger">@Model.Name</span> Department?</h1>
+
+<form asp-action="Delete">
+    <partial name="PartialViews/DetailsDeleteDepartmentPartial" />
+
+    <input type="submit" value="Delete" class="btn btn-danger" /> |
+    <a asp-action="Index" class="btn btn-light">Cancel</a>
+</form>
