@@ -21,7 +21,7 @@ namespace Company.PL.ViewModels
     {
         [Required]
         [MaxLength(50, ErrorMessage = "Max Length of Name is 50 Chars")]
-        [MinLength(5, ErrorMessage = "Min Length of Name is 5 Chars")]
+        [MinLength(3, ErrorMessage = "Min Length of Name is 5 Chars")]
         public string Name { get; set; }
 
         [Range(22, 50,ErrorMessage = "Age Must be In Range From 22 to 50")]

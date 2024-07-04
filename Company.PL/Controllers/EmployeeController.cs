@@ -14,14 +14,20 @@ namespace Company.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         //private readonly IDepartmentRepository _departmentRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IMapper mapper/*, IDepartmentRepository departmentRepository*/)
+        public EmployeeController(
+            IUnitOfWork unitOfWork,
+            //IEmployeeRepository employeeRepository, 
+            IMapper mapper
+            /*, IDepartmentRepository departmentRepository*/)
         {
-            _employeeRepository = employeeRepository;
+            //_employeeRepository = employeeRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             //_departmentRepository = departmentRepository;
         }
@@ -32,10 +38,10 @@ namespace Company.PL.Controllers
             if (string.IsNullOrEmpty(searchInput))
             {
                 ViewData["AlertColor"] = AlertColor;
-                employees = _employeeRepository.GetAll();
+                employees = _unitOfWork.EmployeeRepository.GetAll();
             }
             else
-                employees = _employeeRepository.SearchByName(searchInput.ToLower());
+                employees = _unitOfWork.EmployeeRepository.SearchByName(searchInput.ToLower());
 
             var employeeVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
             return View(employeeVM);
@@ -52,11 +58,12 @@ namespace Company.PL.Controllers
             if (ModelState.IsValid)
             {
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                var count = _employeeRepository.Add(mappedEmployee);
+                _unitOfWork.EmployeeRepository.Add(mappedEmployee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "New Employee is Created";
-                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-primary" });
                 }
             }
             return View(employeeVM);
@@ -67,7 +74,7 @@ namespace Company.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound();
 
@@ -92,11 +99,12 @@ namespace Company.PL.Controllers
             try
             {
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                var count = _employeeRepository.Update(mappedEmployee);
+                _unitOfWork.EmployeeRepository.Update(mappedEmployee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "One Employee is Updated";
-                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-info" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
                 }
             }
             catch (Exception ex)
@@ -121,7 +129,8 @@ namespace Company.PL.Controllers
             try
             {
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                var count = _employeeRepository.Delete(mappedEmployee);
+                _unitOfWork.EmployeeRepository.Delete(mappedEmployee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Deleted";

@@ -9,10 +9,12 @@ namespace Company.PL.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            //services.AddTransient<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            //services.AddSingleton<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            ////services.AddTransient<IDepartmentRepository, DepartmentRepository>();
+            //services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            ////services.AddSingleton<IDepartmentRepository, DepartmentRepository>();
+            //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            
             services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
             return services;

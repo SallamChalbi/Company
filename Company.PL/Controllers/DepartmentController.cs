@@ -10,18 +10,24 @@ namespace Company.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _repository;
+        //private readonly IDepartmentRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
+
         //private readonly IWebHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepository repository/*, IWebHostEnvironment env*/)
+        public DepartmentController(
+            IUnitOfWork unitOfWork
+            //IDepartmentRepository repository
+            /*, IWebHostEnvironment env*/)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
+            //_repository = repository;
             //_env = env;
         }
 
         public IActionResult Index(string AlertColor)
         {
-            var department = _repository.GetAll();
+            var department = _unitOfWork.DepartmentRepository.GetAll();
             ViewData["AlertColor"] = AlertColor;
             //ViewBag.Message = "Hi from ViewBag";
             return View(department);
@@ -37,11 +43,12 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var count = _repository.Add(department);
+                _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "New Department is Created";
-                    return RedirectToAction(nameof(Index),new { AlertColor = "alert-success" });
+                    return RedirectToAction(nameof(Index),new { AlertColor = "alert-primary" });
                 }
             }
             return View(department);
@@ -52,7 +59,7 @@ namespace Company.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var department = _repository.Get(id.Value);
+            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
             if(department is null)
                 return NotFound();
 
@@ -75,11 +82,12 @@ namespace Company.PL.Controllers
 
             try
             {
-                var count = _repository.Update(department);
+                _unitOfWork.DepartmentRepository.Update(department);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Updated";
-                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-info" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
                 }
             }
             catch (Exception ex)
@@ -103,7 +111,8 @@ namespace Company.PL.Controllers
         {
             try
             {
-                var count = _repository.Delete(department);
+                _unitOfWork.DepartmentRepository.Delete(department);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "One Department is Deleted";
