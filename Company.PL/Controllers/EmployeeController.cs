@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Company.BLL.Interfaces;
+using Company.BLL.Repositories;
 using Company.DAL.Models;
 using Company.PL.ViewModels;
 using Microsoft.AspNetCore.Hosting;
@@ -35,13 +36,14 @@ namespace Company.PL.Controllers
         public IActionResult Index(string AlertColor, string searchInput)
         {
             var employees = Enumerable.Empty<Employee>();
+            var employeeRepository = _unitOfWork.Repository<Employee>() as EmployeeRepository;
             if (string.IsNullOrEmpty(searchInput))
             {
                 ViewData["AlertColor"] = AlertColor;
-                employees = _unitOfWork.EmployeeRepository.GetAll();
+                employees = employeeRepository.GetAll();
             }
             else
-                employees = _unitOfWork.EmployeeRepository.SearchByName(searchInput.ToLower());
+                employees = employeeRepository.SearchByName(searchInput.ToLower());
 
             var employeeVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
             return View(employeeVM);
@@ -58,7 +60,7 @@ namespace Company.PL.Controllers
             if (ModelState.IsValid)
             {
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.EmployeeRepository.Add(mappedEmployee);
+                _unitOfWork.Repository<Employee>().Add(mappedEmployee);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
@@ -74,7 +76,7 @@ namespace Company.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
             if (employee is null)
                 return NotFound();
 
@@ -99,7 +101,7 @@ namespace Company.PL.Controllers
             try
             {
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.EmployeeRepository.Update(mappedEmployee);
+                _unitOfWork.Repository<Employee>().Update(mappedEmployee);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
@@ -129,7 +131,7 @@ namespace Company.PL.Controllers
             try
             {
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.EmployeeRepository.Delete(mappedEmployee);
+                _unitOfWork.Repository<Employee>().Delete(mappedEmployee);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {

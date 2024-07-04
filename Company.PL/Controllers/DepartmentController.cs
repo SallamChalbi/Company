@@ -27,7 +27,7 @@ namespace Company.PL.Controllers
 
         public IActionResult Index(string AlertColor)
         {
-            var department = _unitOfWork.DepartmentRepository.GetAll();
+            var department = _unitOfWork.Repository<Department>().GetAll();
             ViewData["AlertColor"] = AlertColor;
             //ViewBag.Message = "Hi from ViewBag";
             return View(department);
@@ -43,7 +43,7 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.DepartmentRepository.Add(department);
+                _unitOfWork.Repository<Department>().Add(department);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
@@ -59,7 +59,7 @@ namespace Company.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
             if(department is null)
                 return NotFound();
 
@@ -82,7 +82,7 @@ namespace Company.PL.Controllers
 
             try
             {
-                _unitOfWork.DepartmentRepository.Update(department);
+                _unitOfWork.Repository<Department>().Update(department);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
@@ -111,7 +111,7 @@ namespace Company.PL.Controllers
         {
             try
             {
-                _unitOfWork.DepartmentRepository.Delete(department);
+                _unitOfWork.Repository<Department>().Delete(department);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {

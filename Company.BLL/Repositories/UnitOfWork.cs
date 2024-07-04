@@ -1,6 +1,8 @@
 ﻿using Company.BLL.Interfaces;
 using Company.DAL.Data;
+using Company.DAL.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,15 +13,32 @@ namespace Company.BLL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
-
-        public IEmployeeRepository EmployeeRepository { get; set; }
-        public IDepartmentRepository DepartmentRepository { get; set; }
+        private Hashtable _repositories;
 
         public UnitOfWork(ApplicationDbContext dbContext) 
         {
             _dbContext = dbContext;
-            EmployeeRepository = new EmployeeRepository(_dbContext);
-            DepartmentRepository = new DepartmentRepository(_dbContext);
+            _repositories = new Hashtable();
+        }
+
+        public IGenericRepository<T> Repository<T>() where T : ModelBase
+        {
+            var key = typeof(T).Name;
+            if(!_repositories.ContainsKey(key))
+            {
+                if (key == nameof(Employee))
+                {
+                    var repository = new EmployeeRepository(_dbContext);
+                    _repositories.Add(key, repository);
+                }
+                else 
+                {
+                    var repository = new GenericRepository<T>(_dbContext);
+                    _repositories.Add(key, repository);
+                }
+            }
+
+            return _repositories[key] as IGenericRepository<T>;
         }
 
         public int Complete()
@@ -27,5 +46,6 @@ namespace Company.BLL.Repositories
 
         public void Dispose()
             => _dbContext.Dispose();
+
     }
 }
