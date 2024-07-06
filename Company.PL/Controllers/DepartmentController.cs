@@ -48,7 +48,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     TempData["Message"] = "New Department is Created";
-                    return RedirectToAction(nameof(Index),new { AlertColor = "alert-primary" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-primary" });
                 }
             }
             return View(department);
@@ -60,7 +60,7 @@ namespace Company.PL.Controllers
                 return BadRequest();
 
             var department = _unitOfWork.Repository<Department>().Get(id.Value);
-            if(department is null)
+            if (department is null)
                 return NotFound();
 
             return View(viewName, department);
@@ -73,9 +73,9 @@ namespace Company.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute]int id, Department department)
+        public IActionResult Edit([FromRoute] int id, Department department)
         {
-            if(id != department.Id)
+            if (id != department.Id)
                 return BadRequest();
             if (!ModelState.IsValid)
                 return View(department);

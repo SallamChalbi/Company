@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Company.DAL.Models
 {
-    //public enum Gender 
-    //{
-    //    [EnumMember(Value = "Male")]
-    //    Male = 1,
-    //    [EnumMember(Value = "Female")]
-    //    Female  = 2 
-    //}
+    public enum Gender
+    {
+        [EnumMember(Value = "Male")]
+        Male = 1,
+        [EnumMember(Value = "Female")]
+        Female = 2
+    }
     public enum EmpType 
     {
         FullTime = 1, 
@@ -43,10 +43,11 @@ namespace Company.DAL.Models
 
         public DateTime HiringDate { get; set; }
 
-        //public Gender Gender { get; set; }
+        public Gender Gender { get; set; }
         public EmpType EmployeeType { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
-        //public bool IsDeleted { get; set; } = false;
+
+        public string ImageName { get; set; }
 
         [ForeignKey("Department")]
         public int? DepartmentId { get; set; }

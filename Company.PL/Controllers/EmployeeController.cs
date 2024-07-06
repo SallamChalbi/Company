@@ -2,7 +2,8 @@
 using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Models;
-using Company.PL.ViewModels;
+using Company.PL.Helpers;
+using Company.PL.ViewModels.Employee;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -59,11 +60,13 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
+                employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Add(mappedEmployee);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
+
                     TempData["Message"] = "New Employee is Created";
                     return RedirectToAction(nameof(Index), new { AlertColor = "alert-primary" });
                 }
@@ -73,7 +76,7 @@ namespace Company.PL.Controllers
 
         public IActionResult Details(int? id, string viewName = "Details")
         {
-            if (id is null)
+            if (id is null )
                 return BadRequest();
 
             var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
@@ -145,7 +148,7 @@ namespace Company.PL.Controllers
                 // 2. Friendly Message 
 
                 ModelState.AddModelError(string.Empty, ex.Message);
-                
+
             }
             return View(employeeVM);
         }

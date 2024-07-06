@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Company.DAL.Models;
-using Company.PL.ViewModels;
+using Company.PL.ViewModels.Employee;
 
 namespace Company.PL.MapperProfiles
 {

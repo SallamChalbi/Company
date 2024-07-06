@@ -29,12 +29,12 @@ namespace Company.BLL.Repositories
 
         public T Get(int id)
             => _dbContext.Find<T>(id);
-            //=> _dbContext.Set<T>().Find(id);
+        //=> _dbContext.Set<T>().Find(id);
 
         public IEnumerable<T> GetAll()
         {
-            if(typeof(T) == typeof(Employee))
-                return (IEnumerable<T>) _dbContext.Employees.Include(e => e.Department).ToList();
+            if (typeof(T) == typeof(Employee))
+                return (IEnumerable<T>)_dbContext.Employees.Include(e => e.Department).ToList();
 
             return _dbContext.Set<T>().AsNoTracking().ToList();
         }

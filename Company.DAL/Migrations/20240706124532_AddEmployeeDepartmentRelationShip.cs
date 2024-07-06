@@ -6,16 +6,6 @@ namespace Company.DAL.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "Email",
-                table: "Employees",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
-
             migrationBuilder.AddColumn<int>(
                 name: "DepartmentId",
                 table: "Employees",
@@ -49,14 +39,6 @@ namespace Company.DAL.Migrations
             migrationBuilder.DropColumn(
                 name: "DepartmentId",
                 table: "Employees");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Email",
-                table: "Employees",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
         }
     }
 }
