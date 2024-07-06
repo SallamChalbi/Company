@@ -16,10 +16,12 @@ namespace Company.BLL.Repositories
         {
         }
 
+        public override async Task<IEnumerable<Employee>> GetAllAsync()
+            => await _dbContext.Employees.Include(e => e.Department).AsNoTracking().ToListAsync();
         public IQueryable<Employee> GetEmployeesByAdress(string adress)
             => _dbContext.Employees.Where(E => E.Adress.ToLower().Contains(adress.ToLower()));
 
         public IQueryable<Employee> SearchByName(string name)
-            => _dbContext.Employees.Where(E => E.Name.ToLower().Contains(name));
+            => _dbContext.Employees.Where(E => E.Name.Contains(name)).Include(E => E.Department).AsNoTracking();
     }
 }

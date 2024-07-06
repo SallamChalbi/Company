@@ -3,7 +3,7 @@
 @inject IUnitOfWork _unitOfWork
 
 @{
-    var departments = new SelectList(_unitOfWork.Repository<Department>().GetAll(), nameof(Department.Id), nameof(Department.Name));
+    var departments = new SelectList(await _unitOfWork.Repository<Department>().GetAllAsync(), nameof(Department.Id), nameof(Department.Name));
 }
 
 <div class="form-group">

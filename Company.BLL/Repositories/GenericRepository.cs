@@ -27,16 +27,16 @@ namespace Company.BLL.Repositories
         public void Delete(T entity)
             => _dbContext.Set<T>().Remove(entity);
 
-        public T Get(int id)
-            => _dbContext.Find<T>(id);
+        public async Task<T> GetAsync(int id)
+            => await _dbContext.FindAsync<T>(id);
         //=> _dbContext.Set<T>().Find(id);
 
-        public IEnumerable<T> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Employee))
-                return (IEnumerable<T>)_dbContext.Employees.Include(e => e.Department).ToList();
+                return (IEnumerable<T>) await _dbContext.Employees.Include(e => e.Department).AsNoTracking().ToListAsync();
 
-            return _dbContext.Set<T>().AsNoTracking().ToList();
+            return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
     }
 }

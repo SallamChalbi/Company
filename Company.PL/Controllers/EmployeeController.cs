@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Company.PL.Controllers
 {
@@ -34,14 +35,14 @@ namespace Company.PL.Controllers
             //_departmentRepository = departmentRepository;
         }
 
-        public IActionResult Index(string AlertColor, string searchInput)
+        public async Task<IActionResult> Index(string AlertColor, string searchInput)
         {
             var employees = Enumerable.Empty<Employee>();
             var employeeRepository = _unitOfWork.Repository<Employee>() as EmployeeRepository;
             if (string.IsNullOrEmpty(searchInput))
             {
                 ViewData["AlertColor"] = AlertColor;
-                employees = employeeRepository.GetAll();
+                employees = await employeeRepository.GetAllAsync();
             }
             else
                 employees = employeeRepository.SearchByName(searchInput.ToLower());
@@ -56,15 +57,15 @@ namespace Company.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
             if (ModelState.IsValid)
             {
                 if (employeeVM.Image is not null)
-                    employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
+                    employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "images");
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Add(mappedEmployee);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
 
@@ -75,29 +76,31 @@ namespace Company.PL.Controllers
             return View(employeeVM);
         }
 
-        public IActionResult Details(int? id, string viewName = "Details")
+        public async Task<IActionResult> Details(int? id, string viewName = "Details")
         {
             if (id is null )
                 return BadRequest();
 
-            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
+            var employee = await _unitOfWork.Repository<Employee>().GetAsync(id.Value);
             if (employee is null)
                 return NotFound();
+
             if(viewName.Equals("Delete", StringComparison.OrdinalIgnoreCase) ||
                 viewName.Equals("Edit", StringComparison.OrdinalIgnoreCase))
                 TempData["ImageName"] = employee.ImageName;
+
             var employeeVM = _mapper.Map<Employee, EmployeeViewModel>(employee);
             return View(viewName, employeeVM);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return Details(id, "Edit");
+            return await Details(id, "Edit");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
             if (id != employeeVM.Id)
                 return BadRequest();
@@ -115,11 +118,11 @@ namespace Company.PL.Controllers
                         employeeVM.ImageName = ImgName;
                 }
                 if (employeeVM.Image is not null)
-                    employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
+                    employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "images");
 
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Update(mappedEmployee);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     TempData["Message"] = "One Employee is Updated";
@@ -137,20 +140,20 @@ namespace Company.PL.Controllers
             return View(employeeVM);
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]
-        public IActionResult Delete(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Delete(EmployeeViewModel employeeVM)
         {
             try
             {
                 employeeVM.ImageName = TempData["ImageName"] as string;
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Delete(mappedEmployee);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     if(employeeVM.ImageName is not null)

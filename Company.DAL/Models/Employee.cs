@@ -34,7 +34,6 @@ namespace Company.DAL.Models
         [DataType(DataType.Currency)]
         public decimal Salary { get; set; }
 
-        [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
         public string Email {  get; set; }
