@@ -60,7 +60,8 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
+                if (employeeVM.Image is not null)
+                    employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Add(mappedEmployee);
                 var count = _unitOfWork.Complete();
@@ -82,7 +83,9 @@ namespace Company.PL.Controllers
             var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
             if (employee is null)
                 return NotFound();
-
+            if(viewName.Equals("Delete", StringComparison.OrdinalIgnoreCase) ||
+                viewName.Equals("Edit", StringComparison.OrdinalIgnoreCase))
+                TempData["ImageName"] = employee.ImageName;
             var employeeVM = _mapper.Map<Employee, EmployeeViewModel>(employee);
             return View(viewName, employeeVM);
         }
@@ -103,7 +106,17 @@ namespace Company.PL.Controllers
 
             try
             {
-                //employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
+                var ImgName = TempData["ImageName"] as string;
+                if (ImgName is not null)
+                {
+                    if (employeeVM.Image is not null)
+                        DocumentSettings.DeleteFile(ImgName, "images");
+                    else
+                        employeeVM.ImageName = ImgName;
+                }
+                if (employeeVM.Image is not null)
+                    employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
+
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Update(mappedEmployee);
                 var count = _unitOfWork.Complete();
@@ -134,11 +147,14 @@ namespace Company.PL.Controllers
         {
             try
             {
+                employeeVM.ImageName = TempData["ImageName"] as string;
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Delete(mappedEmployee);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
+                    if(employeeVM.ImageName is not null)
+                        DocumentSettings.DeleteFile(employeeVM.ImageName, "images");
                     TempData["Message"] = "One Department is Deleted";
                     return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }
