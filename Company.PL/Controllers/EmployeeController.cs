@@ -103,6 +103,7 @@ namespace Company.PL.Controllers
 
             try
             {
+                //employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "images");
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Update(mappedEmployee);
                 var count = _unitOfWork.Complete();

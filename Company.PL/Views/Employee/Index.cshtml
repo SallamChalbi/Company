@@ -31,6 +31,7 @@
     <table class="table table-striped table-hover mt-4">
         <thead>
             <tr>
+                <th>@Html.DisplayNameFor(D => D.Image)</th>
                 <th>@Html.DisplayNameFor(D => D.Name)</th>
                 <th>@Html.DisplayNameFor(D => D.Age)</th>
                 <th>@Html.DisplayNameFor(D => D.Salary)</th>
@@ -50,6 +51,9 @@
             @foreach(var employee in Model)
             {
                 <tr>
+                    <td>
+                        <img src="~/files/images/@employee.ImageName" class="@(employee.ImageName is not null ? "rounded-circle" : "")" width="75" height="75" alt="Employee Image" />
+                    </td>
                     <td>@Html.DisplayFor(M => employee.Name)</td>
                     <td>@Html.DisplayFor(M => employee.Age)</td>
                     <td>@Html.DisplayFor(M => employee.Salary)</td>
