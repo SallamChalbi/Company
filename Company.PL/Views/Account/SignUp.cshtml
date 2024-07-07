@@ -17,7 +17,7 @@
 			<span asp-validation-for="Username" class="text-danger"></span>
 			<input class="text email" asp-for="Email" placeholder="Email" required="">
 			<span asp-validation-for="Email" class="text-danger"></span>
-			<input class="text" asp-for="Password" placeholder="Password" required="">
+			<input class="text w3lpass" asp-for="Password" placeholder="Password" required="">
 			<span asp-validation-for="Password" class="text-danger"></span>
 			<input class="text w3lpass" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
 			<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
@@ -34,3 +34,6 @@
 	</div>
 </div>
 
+@section ValidationScriptsSections {
+	<partial name="_ValidationScriptsPartial" />
+}

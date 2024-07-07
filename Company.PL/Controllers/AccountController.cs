@@ -1,5 +1,5 @@
 ﻿using Company.DAL.Models;
-using Company.PL.ViewModels.User;
+using Company.PL.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -27,29 +27,35 @@ namespace Company.PL.Controllers
 		{
             if (ModelState.IsValid) 
             {
-                var user = await _userManager.FindByNameAsync(model.Username);
+				var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user is null)
                 {
-				    user = new ApplicationUser()
-                    {
-                        FName = model.FirstName,
-                        LName = model.LastName,
-                        UserName = model.Username,
-                        Email = model.Email,
-                        IsAgree = model.IsAgree
-                    };
+					user = await _userManager.FindByNameAsync(model.Username);
+					if (user is null)
+					{
+						user = new ApplicationUser()
+						{
+							FName = model.FirstName,
+							LName = model.LastName,
+							UserName = model.Username,
+							Email = model.Email,
+							IsAgree = model.IsAgree
+						};
 
-                    var result = await _userManager.CreateAsync(user, model.Password);
-                    if (result.Succeeded)
-                        return RedirectToAction(nameof(SignIn));
+						var result = await _userManager.CreateAsync(user, model.Password);
+						if (result.Succeeded)
+							return RedirectToAction(nameof(SignIn));
 
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
-                else
-				    ModelState.AddModelError(string.Empty, "Ths Username is already in Use for Another Account");
+						foreach (var error in result.Errors)
+						{
+							ModelState.AddModelError(string.Empty, error.Description);
+						}
+					}
+					else
+						ModelState.AddModelError(string.Empty, "This Username is already in Use for Another Account");
+				}
+				else
+					ModelState.AddModelError(string.Empty, "This Account is already Exist");
 			}
             return View(model);
 		}
@@ -60,6 +66,31 @@ namespace Company.PL.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+		public async Task<IActionResult> SignIn(SignInViewModel model)
+		{
+            if (ModelState.IsValid) 
+            { 
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null)
+                {
+                    var flag = await _userManager.CheckPasswordAsync(user, model.Password);
+                    if(flag)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+                        if (result.IsLockedOut)
+							ModelState.AddModelError(string.Empty, "Your Account is locked!!");
+						if (result.Succeeded)
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+						if (result.IsNotAllowed)
+							ModelState.AddModelError(string.Empty, "Your Account is Not Confirmed Yet!!");
+					}
+                }
+                ModelState.AddModelError(string.Empty, "Invalid Login");
+            }
+			return View();
+		}
 		#endregion
 	}
 }
