@@ -1,6 +1,6 @@
 ﻿@model SignInViewModel
 @{
-    ViewData["Title"] = "SignIn";
+    ViewData["Title"] = "Sign In";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
@@ -22,6 +22,7 @@
 			<input type="submit" value="SIGNIN">
 		</form>
 		<p>Don`t have an Account? <a asp-action="SignUp"> Register Now!</a></p>
+		<p><a asp-action="ForgetPassword"> Forget Password?</a></p>
 	</div>
 </div>
 
