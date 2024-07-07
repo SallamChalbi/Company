@@ -42,6 +42,19 @@ namespace Company.PL.Extensions
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/SignIn";
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.AccessDeniedPath = "/Home/Error";
+            });
+
+            services.AddAuthentication().AddCookie("MyScheme", options =>
+            {
+				options.LoginPath = "/Account/SignIn";
+				options.ExpireTimeSpan = TimeSpan.FromDays(1);
+				options.AccessDeniedPath = "/Home/Error";
+			});
             return services;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Company.BLL.Interfaces;
 using Company.BLL.Repositories;
 using Company.DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Company.PL.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         //private readonly IDepartmentRepository _repository;

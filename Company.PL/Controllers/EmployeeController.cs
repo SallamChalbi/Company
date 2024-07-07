@@ -4,6 +4,7 @@ using Company.BLL.Repositories;
 using Company.DAL.Models;
 using Company.PL.Helpers;
 using Company.PL.ViewModels.Employee;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Company.PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         //private readonly IEmployeeRepository _employeeRepository;
