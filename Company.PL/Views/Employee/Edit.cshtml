@@ -1,0 +1,22 @@
+﻿@model EmployeeViewModel
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+
+<h1 class="mb-5">Edit <span class="text-success">@Model.Name</span> Employee</h1>
+
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <partial name="PartialViews/CreatEditEmployeePartial" />
+
+    <input type="submit" value="Save" class="btn btn-primary" /> |
+    <a asp-action="Index" class="btn btn-light">Cancel</a>
+</form>
+
+@section ValidationScriptsSections {
+    @* <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script> *@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    @* <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script> *@
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
