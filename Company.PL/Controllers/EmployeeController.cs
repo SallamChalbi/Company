@@ -19,20 +19,24 @@ namespace Company.PL.Controllers
     [Authorize]
     public class EmployeeController : Controller
     {
-        //private readonly IEmployeeRepository _employeeRepository;
-        private readonly IUnitOfWork _unitOfWork;
+		private readonly IDocumentSettings _settings;
+
+		//private readonly IEmployeeRepository _employeeRepository;
+		private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         //private readonly IDepartmentRepository _departmentRepository;
 
         public EmployeeController(
+            IDocumentSettings settings,
             IUnitOfWork unitOfWork,
             //IEmployeeRepository employeeRepository, 
             IMapper mapper
             /*, IDepartmentRepository departmentRepository*/)
         {
-            //_employeeRepository = employeeRepository;
-            _unitOfWork = unitOfWork;
+			_settings = settings;
+			//_employeeRepository = employeeRepository;
+			_unitOfWork = unitOfWork;
             _mapper = mapper;
             //_departmentRepository = departmentRepository;
         }
@@ -64,7 +68,7 @@ namespace Company.PL.Controllers
             if (ModelState.IsValid)
             {
                 if (employeeVM.Image is not null)
-                    employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "images");
+                    employeeVM.ImageName = await _settings.UploadFile(employeeVM.Image, "images");
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Add(mappedEmployee);
                 var count = await _unitOfWork.CompleteAsync();
@@ -115,12 +119,12 @@ namespace Company.PL.Controllers
                 if (ImgName is not null)
                 {
                     if (employeeVM.Image is not null)
-                        DocumentSettings.DeleteFile(ImgName, "images");
+                        _settings.DeleteFile(ImgName, "images");
                     else
                         employeeVM.ImageName = ImgName;
                 }
                 if (employeeVM.Image is not null)
-                    employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "images");
+                    employeeVM.ImageName = await _settings.UploadFile(employeeVM.Image, "images");
 
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Update(mappedEmployee);
@@ -159,7 +163,7 @@ namespace Company.PL.Controllers
                 if (count > 0)
                 {
                     if(employeeVM.ImageName is not null)
-                        DocumentSettings.DeleteFile(employeeVM.ImageName, "images");
+                        _settings.DeleteFile(employeeVM.ImageName, "images");
                     TempData["Message"] = "One Department is Deleted";
                     return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }

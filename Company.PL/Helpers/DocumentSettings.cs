@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Company.PL.Helpers
 {
-    public static class DocumentSettings
-    {
-        public static async Task<string> UploadFile(IFormFile file, string folderName)
+    public class DocumentSettings : IDocumentSettings
+	{
+        public async Task<string> UploadFile(IFormFile file, string folderName)
         {
             // 1. Get Located Folder Path
             //string folderPath = $"D:\\Projects\\C#\\DotNet5\\Company\\Company.PL\\wwwroot\\files\\{folderName}";
@@ -29,7 +29,7 @@ namespace Company.PL.Helpers
             return fileName;
         }
 
-        public static void DeleteFile(string fileName, string folderName) 
+        public void DeleteFile(string fileName, string folderName) 
         {
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files", folderName, fileName);
             if(File.Exists(filePath))

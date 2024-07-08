@@ -2,6 +2,7 @@
 using Company.BLL.Repositories;
 using Company.DAL.Data;
 using Company.DAL.Models;
+using Company.PL.Helpers;
 using Company.PL.MapperProfiles;
 using Company.PL.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ namespace Company.PL.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddTransient<IDocumentSettings, DocumentSettings>();
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
