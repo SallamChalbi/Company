@@ -3,6 +3,7 @@ using Company.BLL.Repositories;
 using Company.DAL.Data;
 using Company.DAL.Models;
 using Company.PL.MapperProfiles;
+using Company.PL.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,6 +14,8 @@ namespace Company.PL.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             ////services.AddTransient<IDepartmentRepository, DepartmentRepository>();
             //services.AddScoped<IDepartmentRepository, DepartmentRepository>();
@@ -40,9 +43,10 @@ namespace Company.PL.Extensions
                 //options.User.AllowedUserNameCharacters = "qwerty234$78";
                 options.User.RequireUniqueEmail = true;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders(); // Generate default token for resetPasswordToken in ResetPasswordEmail in AccountController 
 
-            services.ConfigureApplicationCookie(options =>
+			services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/SignIn";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);

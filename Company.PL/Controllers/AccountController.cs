@@ -1,18 +1,28 @@
 ﻿using Company.DAL.Models;
+using Company.PL.Services.EmailSender;
 using Company.PL.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace Company.PL.Controllers
 {
     public class AccountController : Controller
     {
+		private readonly IEmailSender _emailSender;
+		private readonly IConfiguration _configuration;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 
-		public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		public AccountController(
+			IEmailSender emailSender,
+			IConfiguration configuration,
+			UserManager<ApplicationUser> userManager, 
+			SignInManager<ApplicationUser> signInManager)
         {
+			_emailSender = emailSender;
+			_configuration = configuration;
 			_userManager = userManager;          
 			_signInManager = signInManager;      
 		}                                        
@@ -108,19 +118,40 @@ namespace Company.PL.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> ResetPassword(ForgetPasswordViewModel model)
+		public async Task<IActionResult> ResetPasswordEmail(ForgetPasswordViewModel model)
 		{
 			if (ModelState.IsValid) 
 			{
 				var user = await _userManager.FindByEmailAsync(model.Email);
 				if (user is not null)
 				{
+					var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+					var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken });
 
+					await _emailSender.SendAsync(
+						from: _configuration["EmailSettings:SenderEmail"],
+						recipients: model.Email,
+						subject: "Reset Your Password",
+						body: resetPasswordUrl);
+
+					return RedirectToAction(nameof(CheckYourInbox));
 				}
 				ModelState.AddModelError(string.Empty, "There is No Account with this Email!");
 			}
 			return View(model);
 		}
+
+		public IActionResult CheckYourInbox()
+		{
+			return View();
+		}
 		#endregion
+
+		//#region Reset Password 
+		//public IActionResult ResetPassword(string email, string token)
+		//{
+		//	return View();
+		//}
+		//#endregion
 	}
 }
