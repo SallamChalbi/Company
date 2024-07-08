@@ -20,7 +20,7 @@ namespace Company.PL.ViewModels.Account
         public string Email { get; set; }
 
 		[Required(ErrorMessage = "Password is Required")]
-		//[MinLength(6, ErrorMessage = "Minimum Password Lenght is 6 Digits")]
+		[MinLength(6, ErrorMessage = "Minimum Password Lenght is 6 Digits")]
 		[DataType(DataType.Password)]
         public string Password { get; set; }
 

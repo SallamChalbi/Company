@@ -6,12 +6,12 @@
 
 <div class="main-agileinfo">
 	<div class="agileits-top">
-		<div asp-validation-summary="ModelOnly"></div>
+		<div asp-validation-summary="ModelOnly" class="txt-red"></div>
 		<form asp-action="SignIn">
 			<input class="text email" asp-for="Email" placeholder="Email" required="">
-			<span asp-validation-for="Email" class="text-danger"></span>
+			<span asp-validation-for="Email" class="txt-red"></span>
 			<input class="text w3lpass" asp-for="Password" placeholder="Password" required="">
-			<span asp-validation-for="Password" class="text-danger"></span>
+			<span asp-validation-for="Password" class="txt-red"></span>
 			<div class="wthree-text">
 				<label class="anim">
 					<input type="checkbox" asp-for="RememberMe" class="checkbox">

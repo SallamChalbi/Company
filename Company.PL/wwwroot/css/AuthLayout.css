@@ -57,6 +57,11 @@ a {
   text-align: center;
 }
 
+/* text align left */
+.txt-red {
+    color: red;
+}
+
 /* text align center */
 .float-rt {
   float: right;
