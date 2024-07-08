@@ -38,7 +38,7 @@ namespace Company.PL.Extensions
 
                 //options.Lockout.AllowedForNewUsers = true;
                 //options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(3);
 
                 //options.User.AllowedUserNameCharacters = "qwerty234$78";
                 options.User.RequireUniqueEmail = true;
