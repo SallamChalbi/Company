@@ -5,7 +5,7 @@
     // string VBagMessage = ViewBag.Message;
 }
 
-<h1 class="mb-5">All Department</h1>
+<h1 class="mb-5">All Departments</h1>
 
 <a asp-controller="Department" asp-action="Create" class="btn btn-primary mb-3">Create New Department</a>
 <!-- Button trigger modal -->
@@ -40,7 +40,7 @@
                     <td>@department.Code</td>
                     <td>@department.Name</td>
                     <td>@department.DateOfCreation</td>
-                    <partial name="_ButtonsPartial" model="@department.Id"/>
+                    <partial name="_ButtonsPartial" model="@department.Id.ToString()"/>
                     @* @await Html.PartialAsync("Delete", department) *@
                 </tr>
             }
@@ -50,7 +50,7 @@
 else
 {
     <div class="mt-3 alert alert-warning">
-        <h3>There is No Departments !!</h3>
+        <h3>There is No Department !!</h3>
     </div>
 }
 

@@ -25,6 +25,7 @@ namespace Company.PL.Extensions
             //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             
             services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+            services.AddAutoMapper(M => M.AddProfile(new UserProfile()));
 
             //services.AddScoped<UserManager<ApplicationUser>>();
             //services.AddScoped<SignInManager<ApplicationUser>>();
