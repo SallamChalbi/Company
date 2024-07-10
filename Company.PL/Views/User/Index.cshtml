@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<UserViewModel>
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    string alertColor = ViewBag.AlertColor;
 }
 
 <h1 class="mb-5">All Users</h1>
@@ -17,12 +17,12 @@
     </form>
 </div>
 
-@* @if (TempData["Message"] is not null)
+@if (TempData["Message"] is not null)
 {
     <div class="alert @alertColor mt-3">
         @TempData["Message"]
     </div>
-} *@
+}
 @if (Model.Count() > 0)
 {
     <table class="table table-striped table-hover mt-4">
