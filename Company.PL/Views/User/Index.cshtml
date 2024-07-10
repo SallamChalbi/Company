@@ -28,7 +28,6 @@
     <table class="table table-striped table-hover mt-4">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(U => U.Id)</th>
                 <th>@Html.DisplayNameFor(U => U.FName)</th>
                 <th>@Html.DisplayNameFor(U => U.LName)</th>
                 <th>@Html.DisplayNameFor(U => U.Username)</th>
@@ -44,7 +43,6 @@
             @foreach (var user in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(U => user.Id)</td>
                     <td>@Html.DisplayFor(U => user.FName)</td>
                     <td>@Html.DisplayFor(U => user.LName)</td>
                     <td>@Html.DisplayFor(U => user.Username)</td>

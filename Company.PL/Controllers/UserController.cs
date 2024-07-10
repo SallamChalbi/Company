@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Company.DAL.Models;
+using Company.PL.ViewModels.Employee;
 using Company.PL.ViewModels.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +24,11 @@ namespace Company.PL.Controllers
 		}
         public async Task<IActionResult> Index(string searchInput)
 		{
-			if (string.IsNullOrEmpty(searchInput))
+			var users = new List<UserViewModel>();
+
+            if (string.IsNullOrEmpty(searchInput))
 			{
-				var users = await _userManager.Users.Select(U => new UserViewModel()
+				users = await _userManager.Users.Select(U => new UserViewModel()
 				{
 					Id = U.Id,
 					FName = U.FName,
@@ -35,30 +39,37 @@ namespace Company.PL.Controllers
 					Roles = _userManager.GetRolesAsync(U).Result
 
 				}).ToListAsync();
-				return View(users);
             }
 			else
 			{
-                var users = await _userManager.Users
-                    .Where(u => u.NormalizedEmail.Trim().Contains(searchInput.Trim().ToUpper())
-                    || u.UserName.Trim().ToLower().Contains(searchInput.ToLower())).ToListAsync();
+				users = await _userManager.Users.Where(u => u.NormalizedEmail.Trim().Contains(searchInput.Trim().ToUpper())
+                    || u.UserName.Trim().ToLower().Contains(searchInput.ToLower()))
+					.Select (u => new UserViewModel()
+                    {
+                        Id = u.Id,
+                        FName = u.FName,
+                        LName = u.LName,
+                        Email = u.Email,
+                        PhoneNumber = u.PhoneNumber,
+                        Username = u.UserName,
+                        Roles = _userManager.GetRolesAsync(u).Result
 
-                var mappedUser = new List<UserViewModel>();
-				foreach (var user in users)
-				{
-					mappedUser.Add(new UserViewModel()
-					{
-						Id= user.Id,
-						FName= user.FName,
-						LName= user.LName,
-						Username= user.UserName,
-						Email= user.Email,
-						PhoneNumber= user.PhoneNumber,
-						Roles = _userManager.GetRolesAsync(user).Result
-					});
-				}
-                return View(mappedUser);
+                    }).ToListAsync();
             }
-		}
-	}
+            return View(users);
+        }
+
+        public async Task<IActionResult> Details(string id, string viewName = "Details")
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null)
+                return NotFound();
+
+            var userVM = _mapper.Map<ApplicationUser, UserViewModel>(user);
+            return View(viewName, userVM);
+        }
+    }
 }

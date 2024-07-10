@@ -6,8 +6,12 @@ namespace Company.PL.ViewModels.User
 	public class UserViewModel
 	{
 		public string Id { get; set; }
-		public string FName { get; set; }
-		public string LName { get; set; }
+        [Required(ErrorMessage = "First Name is Required")]
+        [Display(Name = "First Name")]
+        public string FName { get; set; }
+        [Required(ErrorMessage = "Last Name is Required")]
+        [Display(Name = "Last Name")]
+        public string LName { get; set; }
 		public string Username { get; set; }
 		public string Email { get; set; }
 		[Display(Name = "Phone Number")]
