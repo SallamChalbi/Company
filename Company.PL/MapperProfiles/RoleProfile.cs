@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Company.DAL.Models;
 using Company.PL.ViewModels.Role;
-using Microsoft.AspNetCore.Identity;
 
 namespace Company.PL.MapperProfiles
 {
@@ -8,7 +8,7 @@ namespace Company.PL.MapperProfiles
     {
         public RoleProfile()
         {
-            CreateMap<IdentityRole, RoleViewModel>();
+            CreateMap<ApplicationRole, RoleViewModel>().ReverseMap();
         }
     }
 }

@@ -53,8 +53,8 @@ namespace Company.PL.Controllers
             else
                 employees = employeeRepository.SearchByName(searchInput.ToLower());
 
-            var mappedEmployee = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
-            return View(mappedEmployee);
+            var employeeVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
+            return View(employeeVM);
         }
 
         public IActionResult Create()

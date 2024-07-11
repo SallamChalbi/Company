@@ -32,6 +32,7 @@
             <tr>
                 <th>@Html.DisplayNameFor(R => R.Id)</th>
                 <th>@Html.DisplayNameFor(R => R.Name)</th>
+                <th>@Html.DisplayNameFor(R => R.CreatedAt)</th>
                 <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -43,6 +44,7 @@
                 <tr>
                     <td>@Html.DisplayFor(R => role.Id)</td>
                     <td>@Html.DisplayFor(R => role.Name)</td>
+                    <td>@Html.DisplayFor(R => role.CreatedAt)</td>
                     <partial name="_ButtonsPartial" model="@role.Id" />
                 </tr>
             }

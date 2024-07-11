@@ -1,14 +1,14 @@
-﻿@model EmployeeViewModel
+﻿@model RoleViewModel
 @{
-    ViewData["Title"] = "Edit Employee";
+    ViewData["Title"] = "Edit";
 }
 
-<h1 class="mb-5">Edit <span class="text-success">@Model.Name</span> Employee</h1>
+<h1 class="mb-5">Edit <span class="text-success">@Model.Name</span> Role</h1>
 
-<form asp-action="Edit" enctype="multipart/form-data">
+<form asp-action="Edit">
     <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
-    <partial name="PartialViews/CreateEditEmployeePartial" />
+    <partial name="PartialViews/CreateEditRolePartial" />
 
     <input type="submit" value="Save" class="btn btn-primary" /> |
     <a asp-action="Index" class="btn btn-light">Cancel</a>

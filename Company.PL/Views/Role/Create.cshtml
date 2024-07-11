@@ -1,12 +1,12 @@
-﻿@model EmployeeViewModel
+﻿@model RoleViewModel
 @{
-    ViewData["Title"] = "Create Employee";
+    ViewData["Title"] = "Create";
 }
 
-<h1 class="mb-5">Create new Employee</h1>
+<h1 class="mb-5">Create new Role</h1>
 
-<form asp-action="Create" enctype="multipart/form-data">
-    <partial name="PartialViews/CreateEditEmployeePartial" />
+<form asp-action="Create">
+    <partial name="PartialViews/CreateEditRolePartial" />
 
     <input type="submit" value="Create" class="btn btn-primary" /> |
     <a asp-action="Index" class="btn btn-light">Back To List</a>

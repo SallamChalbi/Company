@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Company.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240711084453_AddCreatedAtColumnAtRoleTable")]
+    [Migration("20240711101021_AddCreatedAtColumnAtRoleTable")]
     partial class AddCreatedAtColumnAtRoleTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

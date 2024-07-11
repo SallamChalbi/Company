@@ -9,6 +9,6 @@ namespace Company.DAL.Models
 {
     public class ApplicationRole : IdentityRole
     {
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
     }
 }
