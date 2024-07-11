@@ -115,6 +115,10 @@ namespace Company.PL.Controllers
 
             try
             {
+                var employeeDB = await _unitOfWork.Repository<Employee>().GetAsync(employeeVM.Id);
+                if (employeeDB is null)
+                    return NotFound();
+
                 var ImgName = TempData["ImageName"] as string;
                 if (ImgName is not null)
                 {
@@ -156,6 +160,10 @@ namespace Company.PL.Controllers
         {
             try
             {
+                var employeeDB = await _unitOfWork.Repository<Employee>().GetAsync(employeeVM.Id);
+                if (employeeDB is null)
+                    return NotFound();
+
                 employeeVM.ImageName = TempData["ImageName"] as string;
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Delete(mappedEmployee);

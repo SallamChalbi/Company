@@ -85,6 +85,10 @@ namespace Company.PL.Controllers
 
             try
             {
+                var departmentDB = await _unitOfWork.Repository<Department>().GetAsync(department.Id);
+                if (departmentDB is null)
+                    return NotFound();
+
                 _unitOfWork.Repository<Department>().Update(department);
                 var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
@@ -114,6 +118,10 @@ namespace Company.PL.Controllers
         {
             try
             {
+                var departmentDB = await _unitOfWork.Repository<Department>().GetAsync(department.Id);
+                if (departmentDB is null)
+                    return NotFound();
+
                 _unitOfWork.Repository<Department>().Delete(department);
                 var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)

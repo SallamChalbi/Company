@@ -96,6 +96,9 @@ namespace Company.PL.Controllers
             try
             {
                 var user = await _userManager.FindByIdAsync(id);
+                if (user is null)
+                    return NotFound();
+
                 user.FName = userVM.FName;
                 user.LName = userVM.LName;
                 user.PhoneNumber = userVM.PhoneNumber;
@@ -104,6 +107,44 @@ namespace Company.PL.Controllers
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "One User is Updated";
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogError(error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 1. Log Exception 
+                // 2. Friendly Message 
+                _logger.LogError(ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message);
+
+            }
+            return View(userVM);
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            return await Details(id, "Delete");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserViewModel userVM)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userVM.Id);
+                if (user is null)
+                    return NotFound();
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["Message"] = "One User is Deleted";
                     return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
                 }
 
