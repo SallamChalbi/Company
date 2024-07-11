@@ -35,7 +35,8 @@ namespace Company.PL.Controllers
 
             if (string.IsNullOrEmpty(searchInput))
 			{
-				users = await _userManager.Users.Select(U => new UserViewModel()
+                ViewData["AlertColor"] = AlertColor;
+                users = await _userManager.Users.Select(U => new UserViewModel()
 				{
 					Id = U.Id,
 					FName = U.FName,

@@ -26,11 +26,12 @@ namespace Company.PL.Extensions
             
             services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
             services.AddAutoMapper(M => M.AddProfile(new UserProfile()));
+            services.AddAutoMapper(M => M.AddProfile(new RoleProfile()));
 
             //services.AddScoped<UserManager<ApplicationUser>>();
             //services.AddScoped<SignInManager<ApplicationUser>>();
             //services.AddScoped<RoleManager<IdentityRole>>();
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequiredUniqueChars = 2;
                 //options.Password.RequireDigit = true;
