@@ -94,38 +94,38 @@ namespace Company.PL.Controllers
         {
             if (id != roleVM.Id)
                 return BadRequest();
-            if (!ModelState.IsValid)
-                return View(roleVM);
-
-            try
+            if (ModelState.IsValid)
             {
-                var role = await _roleManager.FindByIdAsync(id);
-                if (role is null)
-                    return NotFound();
-
-                role.Name = roleVM.Name;
-                role.NormalizedName =roleVM.Name.ToUpper();
-
-                var result = await _roleManager.UpdateAsync(role);
-                if (result.Succeeded)
+                try
                 {
-                    TempData["Message"] = "One Role is Updated";
-                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
-                }
+                    var role = await _roleManager.FindByIdAsync(id);
+                    if (role is null)
+                        return NotFound();
 
-                foreach (var error in result.Errors)
+                    role.Name = roleVM.Name;
+                    role.NormalizedName = roleVM.Name.ToUpper();
+
+                    var result = await _roleManager.UpdateAsync(role);
+                    if (result.Succeeded)
+                    {
+                        TempData["Message"] = "One Role is Updated";
+                        return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        _logger.LogError(error.Description);
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                catch (Exception ex)
                 {
-                    _logger.LogError(error.Description);
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            catch (Exception ex)
-            {
-                // 1. Log Exception 
-                // 2. Friendly Message 
-                _logger.LogError(ex.Message);
-                ModelState.AddModelError(string.Empty, ex.Message);
+                    // 1. Log Exception 
+                    // 2. Friendly Message 
+                    _logger.LogError(ex.Message);
+                    ModelState.AddModelError(string.Empty, ex.Message);
 
+                }
             }
             return View(roleVM);
         }
@@ -174,6 +174,8 @@ namespace Company.PL.Controllers
             if (role is null)
                 return NotFound();
 
+            ViewBag.RoleId = roleId;
+            ViewData["RoleName"] = role.Name;
             var usersInRole = new List<UserInRoleViewModel>();
             var users = await _userManager.Users.ToListAsync();
 
@@ -193,7 +195,47 @@ namespace Company.PL.Controllers
                 usersInRole.Add(userInRole);
             }
 
+            //TempData["UsersInRole"] = usersInRole;
             return View(usersInRole);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrRemoveUser(string roleId, List<UserInRoleViewModel> users)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var role = await _roleManager.FindByIdAsync(roleId);
+                    if (role is null)
+                        return NotFound();
+
+                    //var usersInRole = TempData["UsersInRole"] as List<UserInRoleViewModel>;
+                    //for (var i = 0; i < users.Count; i++)
+                    //{
+                    //    usersInRole[i].IsSelected = users[i].IsSelected;
+                    //}
+
+                    foreach (var user in users)
+                    {
+                        var appUser = await _userManager.FindByIdAsync(user.UserId);
+                        if (appUser is not null)
+                        {
+                            if (user.IsSelected && !await _userManager.IsInRoleAsync(appUser, role.Name))
+                                await _userManager.AddToRoleAsync(appUser, role.Name);
+                            else if (!user.IsSelected && await _userManager.IsInRoleAsync(appUser, role.Name))
+                                await _userManager.RemoveFromRoleAsync(appUser, role.Name);
+                        }
+                    }
+
+                    return RedirectToAction(nameof(Edit), new { id = roleId });
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+            }
+            return View(users);
         }
     }
 }
