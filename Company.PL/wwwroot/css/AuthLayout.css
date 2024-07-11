@@ -44,7 +44,7 @@ a {
 }
 
 .txt-rt {
-  text-align: right;
+    text-align: right;
 }
 
 /* text align right */
@@ -55,11 +55,6 @@ a {
 /* text align left */
 .txt-center {
   text-align: center;
-}
-
-/* text align left */
-.txt-red {
-    color: red;
 }
 
 /* text align center */
@@ -765,4 +760,18 @@ input.checkbox:checked:after {
   .main-w3layouts {
     padding: 1em 0 0;
   }
+}
+
+/* text red */
+.txt-red {
+    color: red !important;
+}
+
+.txt-center {
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+#txt-darks {
+    color: darkslategrey !important;
 }

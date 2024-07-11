@@ -7,7 +7,9 @@ using Company.PL.MapperProfiles;
 using Company.PL.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Company.PL.Extensions
 {
@@ -50,19 +52,20 @@ namespace Company.PL.Extensions
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders(); // Generate default token for resetPasswordToken in ResetPasswordEmail in AccountController 
 
-			services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Account/SignIn";
-                options.ExpireTimeSpan = TimeSpan.FromDays(1);
-                options.AccessDeniedPath = "/Home/Error";
-            });
+			//services.ConfigureApplicationCookie(options =>
+   //         {
+   //             options.LoginPath = new PathString("/Account/SignIn");
+   //             options.ExpireTimeSpan = TimeSpan.FromDays(1);
+   //             options.AccessDeniedPath = new PathString("/Home/Error");
+   //         });
 
-            services.AddAuthentication().AddCookie("MyScheme", options =>
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-				options.LoginPath = "/Account/SignIn";
-				options.ExpireTimeSpan = TimeSpan.FromDays(1);
-				options.AccessDeniedPath = "/Home/Error";
-			});
+				options.LoginPath = new PathString("/Account/Login");
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+				options.AccessDeniedPath = new PathString("/Home/Error");
+            });
             return services;
         }
     }

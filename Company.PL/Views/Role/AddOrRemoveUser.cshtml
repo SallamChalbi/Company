@@ -5,7 +5,7 @@
     var roleName = ViewData["RoleName"];
 }
 
-<h1 class="mb-5">Add Or Remove User to <span class="text-success">@roleName</span> Role</h1>
+<h1 class="mb-5">Add Or Remove User for Role <span class="text-success">@roleName</span></h1>
 
 <form asp-action="AddOrRemoveUser" asp-route-roleId="@roleId">
     @for(var i = 0; i < Model.Count; i++)

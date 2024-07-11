@@ -74,13 +74,13 @@ namespace Company.PL.Controllers
 		#endregion
 
 		#region SignIn
-        public IActionResult SignIn()
+        public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-		public async Task<IActionResult> SignIn(SignInViewModel model)
+		public async Task<IActionResult> Login(SignInViewModel model)
 		{
             if (ModelState.IsValid) 
             { 
@@ -101,7 +101,7 @@ namespace Company.PL.Controllers
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Email or Password!");
             }
-			return View();
+			return View(model);
 		}
 		#endregion
 
@@ -109,7 +109,7 @@ namespace Company.PL.Controllers
 		public async new Task<IActionResult> SignOut()
 		{
 			await _signInManager.SignOutAsync();
-			return RedirectToAction(nameof(SignIn));
+			return RedirectToAction(nameof(Login));
 		}
         #endregion
 
@@ -211,5 +211,10 @@ namespace Company.PL.Controllers
 			return View();
 		}
 		#endregion
+
+		public IActionResult AccessDenied()
+		{
+			return View();
+		}
 	}
 }
