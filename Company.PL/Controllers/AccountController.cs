@@ -93,13 +93,13 @@ namespace Company.PL.Controllers
                         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
                         if (result.IsLockedOut)
 							ModelState.AddModelError(string.Empty, "Your Account is locked!!");
+						//if (result.IsNotAllowed)
+						//	ModelState.AddModelError(string.Empty, "Your Account is Not Confirmed Yet!!");
 						if (result.Succeeded)
                             return RedirectToAction(nameof(HomeController.Index), "Home");
-						if (result.IsNotAllowed)
-							ModelState.AddModelError(string.Empty, "Your Account is Not Confirmed Yet!!");
 					}
                 }
-                ModelState.AddModelError(string.Empty, "Invalid Login");
+                ModelState.AddModelError(string.Empty, "Invalid Email or Password!");
             }
 			return View();
 		}

@@ -15,15 +15,18 @@ namespace Company.PL.Controllers
     public class RoleController : Controller
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
         private readonly ILogger<RoleController> _logger;
 
         public RoleController(
             RoleManager<ApplicationRole> roleManager, 
+            UserManager<ApplicationUser> userManager,
             IMapper mapper,
             ILogger<RoleController> logger)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
             _mapper = mapper;
             _logger = logger;
         }
@@ -163,6 +166,34 @@ namespace Company.PL.Controllers
 
             }
             return View(roleVM);
+        }
+
+        public async Task<IActionResult> AddOrRemoveUser(string roleId)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role is null)
+                return NotFound();
+
+            var usersInRole = new List<UserInRoleViewModel>();
+            var users = await _userManager.Users.ToListAsync();
+
+            foreach (var user in users)
+            {
+                var userInRole = new UserInRoleViewModel()
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName
+                };
+
+                if(await _userManager.IsInRoleAsync(user, role.Name))
+                    userInRole.IsSelected = true;
+                else
+                    userInRole.IsSelected = false;
+
+                usersInRole.Add(userInRole);
+            }
+
+            return View(usersInRole);
         }
     }
 }
