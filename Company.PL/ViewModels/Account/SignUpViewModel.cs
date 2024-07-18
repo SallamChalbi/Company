@@ -4,8 +4,6 @@ namespace Company.PL.ViewModels.Account
 {
 	public class SignUpViewModel
 	{
-		[Required(ErrorMessage = "Username is Required")]
-        public string Username { get; set; }
 
 		[Required(ErrorMessage = "First Name is Required")]
 		[Display(Name = "First Name")]

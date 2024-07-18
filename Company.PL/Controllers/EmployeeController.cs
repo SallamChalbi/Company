@@ -114,10 +114,6 @@ namespace Company.PL.Controllers
 
             try
             {
-                var employeeDB = await _unitOfWork.Repository<Employee>().GetAsync(employeeVM.Id);
-                if (employeeDB is null)
-                    return NotFound();
-
                 var ImgName = TempData["ImageName"] as string;
                 if (ImgName is not null)
                 {
@@ -155,23 +151,28 @@ namespace Company.PL.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Delete([FromRoute] int id, EmployeeViewModel employeeVM)
         {
-            try
+			if (id != employeeVM.Id)
+				return BadRequest();
+			if (!ModelState.IsValid)
+				return View(employeeVM);
+
+			try
             {
                 var employeeDB = await _unitOfWork.Repository<Employee>().GetAsync(employeeVM.Id);
                 if (employeeDB is null)
                     return NotFound();
 
-                employeeVM.ImageName = TempData["ImageName"] as string;
-                var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                _unitOfWork.Repository<Employee>().Delete(mappedEmployee);
+                //employeeVM.ImageName = TempData["ImageName"] as string;
+                //var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+                _unitOfWork.Repository<Employee>().Delete(employeeDB);
                 var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     if(employeeVM.ImageName is not null)
                         _settings.DeleteFile(employeeVM.ImageName, "images");
-                    TempData["Message"] = "One Department is Deleted";
+                    TempData["Message"] = "One Employee is Deleted";
                     return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }
             }

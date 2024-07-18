@@ -85,9 +85,6 @@ namespace Company.PL.Controllers
 
             try
             {
-                var departmentDB = await _unitOfWork.Repository<Department>().GetAsync(department.Id);
-                if (departmentDB is null)
-                    return NotFound();
 
                 _unitOfWork.Repository<Department>().Update(department);
                 var count = await _unitOfWork.CompleteAsync();
@@ -114,13 +111,13 @@ namespace Company.PL.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(Department department)
+        public async Task<IActionResult> Delete(Department department, [FromRoute] int id)
         {
-            try
+			if (id != department.Id)
+				return BadRequest();
+
+			try
             {
-                var departmentDB = await _unitOfWork.Repository<Department>().GetAsync(department.Id);
-                if (departmentDB is null)
-                    return NotFound();
 
                 _unitOfWork.Repository<Department>().Delete(department);
                 var count = await _unitOfWork.CompleteAsync();

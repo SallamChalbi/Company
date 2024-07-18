@@ -131,12 +131,14 @@ namespace Company.PL.Controllers
             return View(userVM);
         }
 
-        public async Task<IActionResult> Delete(string id)
+		[Authorize(Roles = AppPermessions.Admin)]
+		public async Task<IActionResult> Delete(string id)
         {
             return await Details(id, "Delete");
         }
 
-        [HttpPost]
+		[Authorize(Roles = AppPermessions.Admin)]
+		[HttpPost]
         public async Task<IActionResult> Delete(UserViewModel userVM)
         {
             try
@@ -149,7 +151,7 @@ namespace Company.PL.Controllers
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "One User is Deleted";
-                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }
 
                 foreach (var error in result.Errors)

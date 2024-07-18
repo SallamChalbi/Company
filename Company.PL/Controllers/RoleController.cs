@@ -62,8 +62,11 @@ namespace Company.PL.Controllers
             {
                 var mappedRole = _mapper.Map<RoleViewModel, ApplicationRole>(role);
                 var result = await _roleManager.CreateAsync(mappedRole);
-                if (result.Succeeded) 
-                    return RedirectToAction(nameof(Index));
+                if (result.Succeeded)
+                {
+					TempData["Message"] = "New Role is Created";
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-primary" });
+				}
 
                 foreach (var error in result.Errors)
                 {
@@ -152,7 +155,7 @@ namespace Company.PL.Controllers
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "One Role is Deleted";
-                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-success" });
+                    return RedirectToAction(nameof(Index), new { AlertColor = "alert-danger" });
                 }
 
                 foreach (var error in result.Errors)

@@ -42,29 +42,23 @@ namespace Company.PL.Controllers
 				var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user is null)
                 {
-					user = await _userManager.FindByNameAsync(model.Username);
-					if (user is null)
+					user = new ApplicationUser()
 					{
-						user = new ApplicationUser()
-						{
-							FName = model.FirstName,
-							LName = model.LastName,
-							UserName = model.Username,
-							Email = model.Email,
-							IsAgree = model.IsAgree
-						};
+						FName = model.FirstName,
+						LName = model.LastName,
+						UserName = model.Email.Split("@")[0],
+						Email = model.Email,
+						IsAgree = model.IsAgree
+					};
 
-						var result = await _userManager.CreateAsync(user, model.Password);
-						if (result.Succeeded)
-							return RedirectToAction(nameof(SignIn));
+					var result = await _userManager.CreateAsync(user, model.Password);
+					if (result.Succeeded)
+						return RedirectToAction(nameof(Login));
 
-						foreach (var error in result.Errors)
-						{
-							ModelState.AddModelError(string.Empty, error.Description);
-						}
+					foreach (var error in result.Errors)
+					{
+						ModelState.AddModelError(string.Empty, error.Description);
 					}
-					else
-						ModelState.AddModelError(string.Empty, "This Username is already in Use for Another Account");
 				}
 				else
 					ModelState.AddModelError(string.Empty, "This Account is already Exist");
@@ -73,7 +67,7 @@ namespace Company.PL.Controllers
 		}
 		#endregion
 
-		#region SignIn
+		#region Login
         public IActionResult Login()
         {
             return View();
@@ -120,7 +114,7 @@ namespace Company.PL.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> ResetPasswordEmail(ForgetPasswordViewModel model)
+		public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel model)
 		{
 			if (ModelState.IsValid) 
 			{
@@ -174,18 +168,17 @@ namespace Company.PL.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var email = TempData["Email"] as string;
-				var token = TempData["Token"] as string;
+				var email = TempData["senderEmail"] as string;
+				var token = TempData["senderToken"] as string;
 
 				var user = await _userManager.FindByEmailAsync(email);
 				if (user is not null)
 				{
 					var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
 					if (result.Succeeded)
-						return RedirectToAction(nameof(SignIn));
+						return RedirectToAction(nameof(Login));
 
-					foreach (var error in result.Errors)
-						ModelState.AddModelError(string.Empty, error.Description);
+					return RedirectToAction(nameof(InvaledEmailOrToken));
 				}
 				else
 					ModelState.AddModelError(string.Empty, "User is Not Valid");
@@ -196,8 +189,8 @@ namespace Company.PL.Controllers
 					return RedirectToAction(nameof(MoreThanThreeAttemps));
 				}
 
-				TempData["email"] = email;
-				TempData["token"] = token;
+				TempData["senderEmail"] = email;
+				TempData["senderToken"] = token;
 			}
 			return View(model);
 		}
