@@ -1,4 +1,5 @@
-﻿@model IEnumerable<UserViewModel>
+﻿@using Company.PL.Authorizations
+@model IEnumerable<UserViewModel>
 @{
     ViewData["Title"] = "Index";
     string alertColor = ViewBag.AlertColor;
@@ -42,6 +43,9 @@
         <tbody>
             @foreach (var user in Model)
             {
+                if (User.IsInRole(AppPermessions.Supervisor) && !User.IsInRole(AppPermessions.Admin) && user.Roles.Contains(AppPermessions.Admin))
+                    continue;
+
                 <tr>
                     <td>@Html.DisplayFor(U => user.FName)</td>
                     <td>@Html.DisplayFor(U => user.LName)</td>
@@ -50,7 +54,8 @@
                     <td>@Html.DisplayFor(U => user.PhoneNumber)</td>
                     <td>@string.Join(",", user.Roles)</td>
                     <partial name="_ButtonsPartial" model="@user.Id" />
-                </tr>
+                </tr>                    
+                
             }
         </tbody>
     </table>

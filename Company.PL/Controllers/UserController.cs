@@ -131,13 +131,11 @@ namespace Company.PL.Controllers
             return View(userVM);
         }
 
-		[Authorize(Roles = AppPermessions.Admin)]
 		public async Task<IActionResult> Delete(string id)
         {
             return await Details(id, "Delete");
         }
 
-		[Authorize(Roles = AppPermessions.Admin)]
 		[HttpPost]
         public async Task<IActionResult> Delete(UserViewModel userVM)
         {
