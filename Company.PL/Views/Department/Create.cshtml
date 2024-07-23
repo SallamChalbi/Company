@@ -1,0 +1,40 @@
+﻿@model Department
+@{
+    ViewData["Title"] = "Create Department";
+}
+
+<!-- Modal -->
+@* <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Create">
+                    <partial name="PartialViews/CreatEditDepartmentPartial" />
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div> *@
+<h1 class="mb-5">Create new Department</h1>
+
+<form asp-action="Create">
+    <partial name="PartialViews/CreateEditDepartmentPartial" />
+
+    <input type="submit" value="Create" class="btn btn-primary" /> |
+    <a asp-action="Index" class="btn btn-light">Back To List</a>
+    
+</form>
+
+@section ValidationScriptsSections {
+    <partial name="_ValidationScriptsPartial" />
+}
