@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using System.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Company.PL.Settings;
 
 namespace Company.PL.Extensions
 {
@@ -44,6 +45,15 @@ namespace Company.PL.Extensions
             //    options.ExpireTimeSpan = TimeSpan.FromDays(1);
             //    options.AccessDeniedPath = new PathString("/Home/Error");
             //});
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //}).AddGoogle(op =>
+            //{
+            //    op.ClientId = builder.Configuration.GetSection("Authentication:Google")["ClientId"];
+            //    op.ClientSecret = builder.Configuration.GetSection("Authentication:Google")["ClientSecret"];
+            //});
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -64,16 +74,7 @@ namespace Company.PL.Extensions
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders(); // Generate default token for resetPasswordToken in ResetPasswordEmail in AccountController 
 
-
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //}).AddGoogle(op =>
-            //{
-            //    op.ClientId = builder.Configuration.GetSection("Authentication:Google")["ClientId"];
-            //    op.ClientSecret = builder.Configuration.GetSection("Authentication:Google")["ClientSecret"];
-            //});
+            services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSettings"));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>

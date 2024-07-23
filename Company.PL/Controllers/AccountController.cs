@@ -149,7 +149,7 @@ namespace Company.PL.Controllers
 					var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 					var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
 
-					await _emailSender.SendAsync(
+					_emailSender.SendAsync(
 						from: _configuration["EmailSettings:SenderEmail"],
 						recipients: model.Email,
 						subject: "Reset Your Password",
