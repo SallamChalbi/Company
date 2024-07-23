@@ -50,6 +50,21 @@ namespace Company.PL.Controllers
             return View(roleVM);
         }
 
+        public async Task<IActionResult> Search(string AlertColor, string searchInput)
+        {
+            var roles = new List<ApplicationRole>();
+            if (string.IsNullOrEmpty(searchInput))
+            {
+                ViewData["AlertColor"] = AlertColor;
+                roles = await _roleManager.Roles.ToListAsync();
+            }
+            else
+                roles = await _roleManager.Roles.Where(r => r.NormalizedName.Trim().Contains(searchInput.Trim().ToUpper())).ToListAsync();
+
+            var roleVM = _mapper.Map<List<ApplicationRole>, List<RoleViewModel>>(roles);
+            return PartialView("SearchPartialView", roleVM);
+        }
+
         public IActionResult Create()
         {
             return View();

@@ -10,12 +10,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using System.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace Company.PL.Extensions
 {
     public static class ApplicationServicesExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
             services.AddTransient<IDocumentSettings, DocumentSettings>();
             services.AddTransient<IEmailSender, EmailSender>();
@@ -33,6 +37,14 @@ namespace Company.PL.Extensions
             //services.AddScoped<UserManager<ApplicationUser>>();
             //services.AddScoped<SignInManager<ApplicationUser>>();
             //services.AddScoped<RoleManager<IdentityRole>>();
+
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.LoginPath = new PathString("/Account/SignIn");
+            //    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+            //    options.AccessDeniedPath = new PathString("/Home/Error");
+            //});
+
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequiredUniqueChars = 2;
@@ -52,20 +64,45 @@ namespace Company.PL.Extensions
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders(); // Generate default token for resetPasswordToken in ResetPasswordEmail in AccountController 
 
-			//services.ConfigureApplicationCookie(options =>
-   //         {
-   //             options.LoginPath = new PathString("/Account/SignIn");
-   //             options.ExpireTimeSpan = TimeSpan.FromDays(1);
-   //             options.AccessDeniedPath = new PathString("/Home/Error");
-   //         });
+
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //}).AddGoogle(op =>
+            //{
+            //    op.ClientId = builder.Configuration.GetSection("Authentication:Google")["ClientId"];
+            //    op.ClientSecret = builder.Configuration.GetSection("Authentication:Google")["ClientSecret"];
+            //});
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-				options.LoginPath = new PathString("/Account/Login");
+                options.LoginPath = new PathString("/Account/Login");
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
-				options.AccessDeniedPath = new PathString("/Home/Error");
+                options.AccessDeniedPath = new PathString("/Home/Error");
             });
+
+            //// Add Authentication services
+            //services.AddAuthentication(options =>
+            //{
+            //    //    // Specify the default authentication scheme
+            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            //{
+            //    options.LoginPath = "/Account/Login";
+            //    options.AccessDeniedPath = "/Account/AccessDenied";
+            //    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+            //})
+            //.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            //{
+            //    options.ClientId = builder.Configuration.GetSection("Authentication:Google")["ClientId"];
+            //    options.ClientSecret = builder.Configuration.GetSection("Authentication:Google")["ClientSecret"];
+            //});
+
             return services;
         }
     }

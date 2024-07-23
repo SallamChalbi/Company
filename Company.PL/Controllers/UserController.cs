@@ -32,6 +32,7 @@ namespace Company.PL.Controllers
 			_mapper = mapper;
             _logger = logger;
         }
+
         public async Task<IActionResult> Index(string AlertColor, string searchInput)
 		{
 			var users = new List<UserViewModel>();
@@ -68,6 +69,44 @@ namespace Company.PL.Controllers
                     }).ToListAsync();
             }
             return View(users);
+        }
+
+        public async Task<IActionResult> Search(string AlertColor, string searchInput)
+        {
+            var users = new List<UserViewModel>();
+
+            if (string.IsNullOrEmpty(searchInput))
+            {
+                ViewData["AlertColor"] = AlertColor;
+                users = await _userManager.Users.Select(U => new UserViewModel()
+                {
+                    Id = U.Id,
+                    FName = U.FName,
+                    LName = U.LName,
+                    Email = U.Email,
+                    PhoneNumber = U.PhoneNumber,
+                    Username = U.UserName,
+                    Roles = _userManager.GetRolesAsync(U).Result
+
+                }).ToListAsync();
+            }
+            else
+            {
+                users = await _userManager.Users.Where(u => u.NormalizedEmail.Trim().Contains(searchInput.Trim().ToUpper())
+                    || u.UserName.Trim().ToLower().Contains(searchInput.ToLower()))
+                    .Select(u => new UserViewModel()
+                    {
+                        Id = u.Id,
+                        FName = u.FName,
+                        LName = u.LName,
+                        Email = u.Email,
+                        PhoneNumber = u.PhoneNumber,
+                        Username = u.UserName,
+                        Roles = _userManager.GetRolesAsync(u).Result
+
+                    }).ToListAsync();
+            }
+            return PartialView("SearchPartialView", users);
         }
 
         public async Task<IActionResult> Details(string id, string viewName = "Details")

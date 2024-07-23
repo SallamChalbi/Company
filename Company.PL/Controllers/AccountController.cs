@@ -1,10 +1,13 @@
 ﻿using Company.DAL.Models;
 using Company.PL.Services.EmailSender;
 using Company.PL.ViewModels.Account;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Company.PL.Controllers
@@ -93,14 +96,36 @@ namespace Company.PL.Controllers
                             return RedirectToAction(nameof(HomeController.Index), "Home");
 					}
                 }
-                ModelState.AddModelError(string.Empty, "Invalid Email or Password!");
+                ModelState.AddModelError(string.Empty, "Invalid login!");
             }
 			return View(model);
 		}
-		#endregion
 
-		#region SignOut
-		public async new Task<IActionResult> SignOut()
+		public IActionResult GoogleLogin()
+		{
+			var prop = new AuthenticationProperties
+			{
+				RedirectUri = Url.Action(nameof(GoogleResponse))
+			};
+			return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+		}
+
+		public async Task<IActionResult> GoogleResponse()
+		{
+			var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+			var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+			{
+				claim.Issuer,
+				claim.OriginalIssuer,
+				claim.Type,
+				claim.Value,
+			});
+			return RedirectToAction("Index", "Home");
+		}
+        #endregion
+
+        #region SignOut
+        public async new Task<IActionResult> SignOut()
 		{
 			await _signInManager.SignOutAsync();
 			return RedirectToAction(nameof(Login));

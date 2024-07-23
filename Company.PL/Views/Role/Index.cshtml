@@ -57,3 +57,24 @@ else
         <h3>There is No Role !!</h3>
     </div>
 }
+
+<script>
+    const searchBar = $('#searchInput');
+    const table = $('table');
+
+    searchBar.on('keyup', function (event) {
+        var searchValue = searchBar.val();
+
+        $.ajax({
+            url: 'Role/Search',
+            type: 'Get',
+            data: { searchInput: searchValue },
+            success: function (result) {
+                table.html(result)
+            },
+            error: function (xhr, status, error) {
+                console.log(error)
+            }
+        })
+    })
+</script>

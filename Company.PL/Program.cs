@@ -27,7 +27,7 @@ namespace Company.PL
 				options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
-			webApplicationBuilder.Services.AddApplicationServices();
+			webApplicationBuilder.Services.AddApplicationServices(webApplicationBuilder);
 			#endregion
 
 			var app = webApplicationBuilder.Build();

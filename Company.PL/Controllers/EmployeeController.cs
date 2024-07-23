@@ -56,6 +56,22 @@ namespace Company.PL.Controllers
             return View(employeeVM);
         }
 
+        public async Task<IActionResult> Search(string AlertColor, string searchInput)
+        {
+            var employees = Enumerable.Empty<Employee>();
+            var employeeRepository = _unitOfWork.Repository<Employee>() as EmployeeRepository;
+            if (string.IsNullOrEmpty(searchInput))
+            {
+                ViewData["AlertColor"] = AlertColor;
+                employees = await employeeRepository.GetAllAsync();
+            }
+            else
+                employees = employeeRepository.SearchByName(searchInput.ToLower());
+
+            var employeeVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
+            return PartialView("SearchPartialView", employeeVM);
+        }
+
         public IActionResult Create()
         {
             return View();
