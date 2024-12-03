@@ -1,0 +1,39 @@
+﻿
+@model SignUpViewModel
+@{
+    ViewData["Title"] = "Sign Up";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="main-agileinfo">
+	<div class="agileits-top">
+		<div asp-validation-summary="ModelOnly" class="txt-red"></div>
+		<form asp-action="SignUp">
+			<input class="text w3lpass" asp-for="FirstName" placeholder="First Name" required="">
+			<span asp-validation-for="FirstName" class="txt-red"></span>
+			<input class="text w3lpass" asp-for="LastName" placeholder="Last Name" required="">
+			<span asp-validation-for="LastName" class="txt-red"></span>
+			<input class="text w3lpass" asp-for="Username" placeholder="Username" required="">
+			<span asp-validation-for="Username" class="txt-red"></span>
+			<input class="text email" asp-for="Email" placeholder="Email" required="">
+			<span asp-validation-for="Email" class="txt-red"></span>
+			<input class="text w3lpass" asp-for="Password" placeholder="Password" required="">
+			<span asp-validation-for="Password" class="txt-red"></span>
+			<input class="text w3lpass" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
+			<span asp-validation-for="ConfirmPassword" class="txt-red"></span>
+			<div class="wthree-text">
+				<label class="anim">
+					<input type="checkbox" asp-for="IsAgree" class="checkbox" required="">
+					<span>I Agree To The Terms & Conditions</span>
+				</label>
+				<div class="clear"> </div>
+			</div>
+			<input type="submit" value="SIGNUP">
+		</form>
+		<p>Do you have an Account? <a asp-action="Login"> Login Now!</a></p>
+	</div>
+</div>
+
+@section ValidationScriptsSections {
+	<partial name="_ValidationScriptsPartial" />
+}
